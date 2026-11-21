@@ -16,11 +16,12 @@ model Book {
   id          Int      @id @default(autoincrement())
   title       String
   author      String
-  description Int
+  description String?
   price       Float
   published   Boolean  @default(false)
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt()
+  updatedAt   DateTime @updatedAt
 
+  @@unique([title, author])
   @@map("books")
 }

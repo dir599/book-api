@@ -1,16 +1,20 @@
 import prisma from "../lib/prisma.js";
-import type { Prisma } from "../generated/prisma/client.js";
+import ApiError from "../utils/apiError.js";
+import { CreateBook } from "../validators/book.validator.js";
 
-// interface createBook {
-// title: string;
-//   author: string;
-//   description: string;
-//   published?: boolean;
-//   price: number;
-// }
-type CreateBook = Prisma.BookCreateInput;
+
+
 
 export const createBookService = async (data: CreateBook) => {
+   const existingBook = await prisma.book.findFirst({
+      where: {
+         title: data.title,
+         author: data.author
+      }
+   })
+   if(existingBook){
+     throw new ApiError(409,"Book already exist")
+   }
    return await prisma.book.create({
     data,
    })
