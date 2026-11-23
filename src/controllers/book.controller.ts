@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
 import asyncHandler from "../utils/asyncHandler.js";
 import { createBookSchema } from "../validators/book.validator.js";
-import { createBookService, getBook } from "../services/book.service.js";
-
+import {
+  createBookService,
+  deleteBook,
+  getBook,
+  getBookById,
+} from "../services/book.service.js";
 
 export const createBookController = asyncHandler(
   async (req: Request, res: Response) => {
@@ -23,11 +27,38 @@ export const createBookController = asyncHandler(
   },
 );
 
-export const getBookController = asyncHandler(async(_req: Request, res: Response)=>{
-  const book = await getBook()
-   res.status(200).json({
-    success: true,
-    message: `All books`,
-    data: book
-  })
-})
+export const getBookController = asyncHandler(
+  async (_req: Request, res: Response) => {
+    const book = await getBook();
+    res.status(200).json({
+      success: true,
+      message: `All books`,
+      data: book,
+    });
+  },
+);
+
+export const getBookByIdController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const id = Number(req.params["id"]);
+
+    const book = await getBookById(id);
+    res.status(200).json({
+      success: true,
+      message: "Book get by id",
+      data: book,
+    });
+  },
+);
+
+export const deleteBookController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const  id  = Number(req.params["id"]);
+    const book = await deleteBook(id);
+    res.status(200).json({
+      success: true,
+      message: "Book deleted successfully",
+      data: book,
+    });
+  },
+);

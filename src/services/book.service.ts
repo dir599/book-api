@@ -1,7 +1,6 @@
-import { id } from "zod/locales";
+
 import prisma from "../lib/prisma.js";
 import ApiError from "../utils/apiError.js";
-import asyncHandler from "../utils/asyncHandler.js";
 import { CreateBook } from "../validators/book.validator.js";
 
 export const createBookService = async (data: CreateBook) => {
@@ -21,12 +20,31 @@ export const createBookService = async (data: CreateBook) => {
 
 export const getBook = async () => {
   const book = await prisma.book.findMany({
+   orderBy: {
+     id: "desc"
+    }
+  });
+  return book;
+};
+
+export const getBookById = async (id: number) => {
+
+  const book = await prisma.book.findUnique({
     where: {
       id: Number(id),
     },
   });
   if (!book) {
-    throw new ApiError(404, "Id invalid");
+    throw new ApiError(404, "Book doesn't found");
   }
+  return book;
+};
+
+export const deleteBook = async (id: number) => {
+  const book = await prisma.book.delete({
+    where: {
+      id: Number(id),
+    },
+  });
   return book;
 };
